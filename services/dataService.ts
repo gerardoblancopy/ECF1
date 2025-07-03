@@ -43,7 +43,7 @@ const MOCK_DATA: Record<string, ScenarioData> = {
   },
 };
 
-const scenarioKeyBuilder = (config: ScenarioConfig): string => {
+const scenarioKeyBuilder = (_config: ScenarioConfig): string => {
   // In a real app, this would build a path to a specific data file/folder.
   // Here, we just use a default key as we only have one mock data set.
   // Example of a full key:

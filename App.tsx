@@ -49,7 +49,7 @@ const App: React.FC = () => {
 
   const handleCountrySelect = (countryName: string) => {
     const country = getCountryByName(countryName);
-    setSelectedCountry(country);
+    setSelectedCountry(country ?? null);
   };
 
   const selectedCountryData = useMemo(() => {
@@ -74,44 +74,46 @@ const App: React.FC = () => {
         </button>
       </header>
 
-      <div className="flex-grow grid grid-cols-12 grid-rows-12 gap-4">
-        {/* Left Column: Country Details (Resultado de Pais Seleccionado) */}
-        <div className="col-span-12 row-span-5 lg:col-span-4 lg:row-span-12 bg-brand-surface border border-brand-border rounded-lg p-4 relative overflow-y-auto">
-          {loading && <Loader />}
-          {!selectedCountry && !loading && <div className="flex items-center justify-center h-full text-brand-text-secondary">Select a country on the map to see details</div>}
-          {selectedCountry && !selectedCountryData && !loading && <div className="text-brand-accent-red flex items-center justify-center h-full">No data for {selectedCountry.name}</div>}
-          {selectedCountry && selectedCountryData && kpiData && selectedCountryKpis && (
-            <CountryDetail country={selectedCountry} data={selectedCountryData} kpis={selectedCountryKpis} />
-          )}
-        </div>
+      <div className="flex-grow flex flex-col lg:flex-row gap-4">
+        {/* Control panel */}
+        <aside className="bg-brand-surface border border-brand-border rounded-lg p-4 flex-shrink-0 lg:w-72">
+          <ControlPanel config={scenarioConfig} setConfig={setScenarioConfig} />
+        </aside>
 
-        {/* Top-Right Quadrant: Controls (Controles de Escena) & Global Results (Resultados Globales) */}
-        <div className="col-span-12 row-span-3 lg:col-span-8 lg:row-span-6 bg-brand-surface border border-brand-border rounded-lg p-4 flex flex-col overflow-hidden">
-            <div className="flex-shrink-0">
-                <ControlPanel config={scenarioConfig} setConfig={setScenarioConfig} />
-            </div>
-            <div className="flex-grow min-h-0 relative">
-               {loading && <Loader />}
-               {error && <div className="text-brand-accent-red flex items-center justify-center h-full">Error loading data</div>}
-               {!loading && !error && scenarioData && kpiData && (
-                  <RegionalSummary regionalData={scenarioData.regional} kpis={kpiData.regional} />
-                )}
-            </div>
-        </div>
-        
-        {/* Bottom-Right Quadrant: Map (Mapa) */}
-        <div className="col-span-12 row-span-4 lg:col-span-8 lg:row-span-6 bg-brand-surface border border-brand-border rounded-lg p-2 relative">
-          {loading && <Loader />}
-          {error && <div className="text-brand-accent-red flex items-center justify-center h-full">{error}</div>}
-          {!loading && !error && scenarioData && kpiData && (
-            <MapVisualization
-              nodes={COUNTRIES}
-              lines={kpiData.regional.lines}
-              onNodeClick={handleCountrySelect}
-              selectedCountry={selectedCountry}
-            />
-          )}
-        </div>
+        <main className="flex-grow grid grid-cols-1 lg:grid-cols-2 gap-4">
+          {/* Map section */}
+          <div className="col-span-1 lg:col-span-2 bg-brand-surface border border-brand-border rounded-lg p-2 relative">
+            {loading && <Loader />}
+            {error && <div className="text-brand-accent-red flex items-center justify-center h-full">{error}</div>}
+            {!loading && !error && scenarioData && kpiData && (
+              <MapVisualization
+                nodes={COUNTRIES}
+                lines={kpiData.regional.lines}
+                onNodeClick={handleCountrySelect}
+                selectedCountry={selectedCountry}
+              />
+            )}
+          </div>
+
+          {/* Regional summary */}
+          <div className="bg-brand-surface border border-brand-border rounded-lg p-4 flex flex-col overflow-hidden">
+            {loading && <Loader />}
+            {error && <div className="text-brand-accent-red flex items-center justify-center h-full">Error loading data</div>}
+            {!loading && !error && scenarioData && kpiData && (
+              <RegionalSummary regionalData={scenarioData.regional} kpis={kpiData.regional} />
+            )}
+          </div>
+
+          {/* Country detail */}
+          <div className="bg-brand-surface border border-brand-border rounded-lg p-4 relative overflow-y-auto">
+            {loading && <Loader />}
+            {!selectedCountry && !loading && <div className="flex items-center justify-center h-full text-brand-text-secondary">Select a country on the map to see details</div>}
+            {selectedCountry && !selectedCountryData && !loading && <div className="text-brand-accent-red flex items-center justify-center h-full">No data for {selectedCountry.name}</div>}
+            {selectedCountry && selectedCountryData && kpiData && selectedCountryKpis && (
+              <CountryDetail country={selectedCountry} data={selectedCountryData} kpis={selectedCountryKpis} />
+            )}
+          </div>
+        </main>
       </div>
       {isAboutModalOpen && <AboutModal onClose={() => setIsAboutModalOpen(false)} />}
     </div>

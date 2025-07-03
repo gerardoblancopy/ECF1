@@ -53,7 +53,7 @@ export const RegionalSummary: React.FC<RegionalSummaryProps> = ({ regionalData, 
                 nameKey="name"
                 label={renderCustomLabel}
               >
-                {pieData.map((entry, index) => (
+                {pieData.map((_, index) => (
                   <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                 ))}
               </Pie>
