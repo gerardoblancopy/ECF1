@@ -1,5 +1,5 @@
 
-import { ScenarioData, KpiData, LineData } from '../types';
+import { ScenarioData, KpiData } from '../types';
 import { COUNTRIES } from '../constants';
 
 const getRandomArbitrary = (min: number, max: number) => {
@@ -8,7 +8,7 @@ const getRandomArbitrary = (min: number, max: number) => {
 
 export const calculateKpis = (data: ScenarioData): KpiData => {
   // These are mock calculations. A real implementation would use formulas from the paper.
-  const regionalGenerationSum = Object.values(data.regional.generationMix).reduce((a, b) => a + b, 0);
+
 
   const kpis: KpiData = {
     regional: {
